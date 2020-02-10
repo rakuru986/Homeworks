@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
 
-namespace ContosoUniversity.Pages.Courses
+namespace ContosoUniversity.Pages.Instructors
 {
     public class EditModel : PageModel
     {
@@ -21,7 +21,7 @@ namespace ContosoUniversity.Pages.Courses
         }
 
         [BindProperty]
-        public Course Course { get; set; }
+        public Instructor Instructor { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,14 +30,12 @@ namespace ContosoUniversity.Pages.Courses
                 return NotFound();
             }
 
-            Course = await _context.Courses
-                .Include(c => c.Department).FirstOrDefaultAsync(m => m.CourseID == id);
+            Instructor = await _context.Instructors.FirstOrDefaultAsync(m => m.ID == id);
 
-            if (Course == null)
+            if (Instructor == null)
             {
                 return NotFound();
             }
-           ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "DepartmentID");
             return Page();
         }
 
@@ -50,7 +48,7 @@ namespace ContosoUniversity.Pages.Courses
                 return Page();
             }
 
-            _context.Attach(Course).State = EntityState.Modified;
+            _context.Attach(Instructor).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +56,7 @@ namespace ContosoUniversity.Pages.Courses
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CourseExists(Course.CourseID))
+                if (!InstructorExists(Instructor.ID))
                 {
                     return NotFound();
                 }
@@ -71,9 +69,9 @@ namespace ContosoUniversity.Pages.Courses
             return RedirectToPage("./Index");
         }
 
-        private bool CourseExists(int id)
+        private bool InstructorExists(int id)
         {
-            return _context.Courses.Any(e => e.CourseID == id);
+            return _context.Instructors.Any(e => e.ID == id);
         }
     }
 }

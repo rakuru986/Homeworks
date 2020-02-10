@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using ContosoUniversity.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using ContosoUniversity.Data;
-using ContosoUniversity.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace ContosoUniversity
+namespace ContosoUniversity.Pages.Courses
 {
     public class IndexModel : PageModel
     {
@@ -19,11 +15,14 @@ namespace ContosoUniversity
             _context = context;
         }
 
-        public IList<Student> Student { get;set; }
+        public IList<Course> Courses { get; set; }
 
         public async Task OnGetAsync()
         {
-            Student = await _context.Students.ToListAsync();
+            Courses = await _context.Courses
+                .Include(c => c.Department)
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }
